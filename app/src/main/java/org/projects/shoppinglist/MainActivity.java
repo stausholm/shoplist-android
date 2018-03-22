@@ -1,9 +1,11 @@
 package org.projects.shoppinglist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,12 +13,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final int RESULT_CODE_PREFERENCES = 1;
 
     ArrayAdapter<String> adapter;
     ListView listView;
@@ -53,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
         //here we create a new adapter linking the bag and the
         //listview
         adapter =  new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice,bag );
+                android.R.layout.simple_list_item_multiple_choice,bag );
 
         //setting the adapter on the listview
         listView.setAdapter(adapter);
         //here we set the choice mode - meaning in this case we can
         //only select one item at a time.
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 
 
@@ -108,13 +112,34 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            //Start our settingsactivity and listen to result - i.e.
+            //when it is finished.
+            Intent intent = new Intent(this,SettingsActivity.class);
+            startActivityForResult(intent,RESULT_CODE_PREFERENCES);
+            //notice the 1 here - this is the code we then listen for in the
+            //onActivityResult
             return true;
         }
-        if (id == R.id.action_delete && listView.getCheckedItemPosition() > -1) {
-            int position = listView.getCheckedItemPosition();
-            bag.remove(position);
+//        if (id == R.id.action_delete && listView.getCheckedItemPosition() > -1) {
+//            int position = listView.getCheckedItemPosition();
+//            bag.remove(position);
+//            adapter.notifyDataSetChanged();
+//            listView.setItemChecked(-1,true);
+//            return true;
+//        }
+        if (id == R.id.action_delete) {
+            SparseBooleanArray positions = listView.getCheckedItemPositions();
+            System.out.println(positions);
+            for (int i = bag.size() -1; i > -1; i--) {
+                //positions.get(i);
+                if (positions.get(i)) {
+                    bag.remove(i);
+                }
+            }
+            listView.clearChoices();
+            //bag.remove(positions);
             adapter.notifyDataSetChanged();
-            listView.setItemChecked(-1,true);
+            //listView.setItemChecked(-1,true);
             return true;
         }
         if (id == R.id.action_clear) {
@@ -125,5 +150,34 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    //This method updates our text views.
+    public void updateUI(String name, boolean male)
+    {
+        TextView myName = findViewById(R.id.MyName);
+        //TextView myGender = findViewById(R.id.myGender);
+        myName.setText("Welcome to " + name + "s shopping list");
+//        if (male)
+//            myGender.setText(R.string.male);
+//        else
+//            myGender.setText(R.string.female);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode==RESULT_CODE_PREFERENCES) //the code means we came back from settings
+        {
+            //I can can these methods like this, because they are static
+            boolean male = MyPreferenceFragment.isMale(this);
+            String name = MyPreferenceFragment.getName(this);
+            String message = "Welcome, "+name+", You are male? "+male;
+            Toast toast = Toast.makeText(this,message,Toast.LENGTH_LONG);
+            toast.show();
+            updateUI(name,male);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
