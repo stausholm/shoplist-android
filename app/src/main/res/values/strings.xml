@@ -12,4 +12,15 @@
     <string name="myGender">Your gender:</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+    <string name="confirmation">Delete All?</string>
+    <string name="areYouSure">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string-array name="variant_array">
+        <item>Pcs</item>
+        <item>ml</item>
+        <item>L</item>
+        <item>G</item>
+    </string-array>
 </resources>

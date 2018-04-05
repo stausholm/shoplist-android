@@ -54,6 +54,14 @@
             android:singleLine="true"
             android:inputType="number" />
 
+        <Spinner
+            android:id="@+id/addSpinner"
+            android:drawSelectorOnTop="true"
+            android:entries="@array/variant_array"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             />
+
         <Button
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
