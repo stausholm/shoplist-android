@@ -16,6 +16,7 @@
     <string name="areYouSure">Are you sure?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="action_share">Share list</string>
 
     <string-array name="variant_array">
         <item>Pcs</item>

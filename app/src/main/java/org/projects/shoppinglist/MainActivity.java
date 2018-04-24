@@ -150,6 +150,21 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_share) {
+            StringBuilder sb = new StringBuilder();
+            Intent intent = new Intent(Intent.ACTION_SEND);
+
+            for (Product bagItem : bag) {
+                sb.append(bagItem.toString() + ",");
+                sb.append("\n");
+            }
+
+            String listToSend = sb.toString();
+            intent.putExtra(Intent.EXTRA_TEXT, listToSend);
+            intent.setType("text/plain");
+            startActivity(intent);
+        }
+
         if (id == R.id.action_settings) {
             //Start our settingsactivity and listen to result - i.e.
             //when it is finished.
@@ -167,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
 //            return true;
 //        }
         if (id == R.id.action_delete) {
+            savedCopies.clear();
             SparseBooleanArray positions = listView.getCheckedItemPositions();
             System.out.println(positions);
             for (int i = bag.size() -1; i > -1; i--) {
