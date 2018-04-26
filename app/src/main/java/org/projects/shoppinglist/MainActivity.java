@@ -23,9 +23,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+//import com.firebase.ui.database.FirebaseAdapter;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+
+
 public class MainActivity extends AppCompatActivity implements MyDialogFragment.OnPositiveListener {
 
-    Map<Integer, Product> savedCopies = new HashMap<>();
+    Map<String, Product> savedCopies = new HashMap<>();
 
 
     MyDialogFragment dialog;
@@ -33,14 +41,17 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
 
     private final int RESULT_CODE_PREFERENCES = 1;
 
-    ArrayAdapter<Product> adapter;
+    FirebaseListAdapter<Product> adapter;
     ListView listView;
-    ArrayList<Product> bag = new ArrayList<>();
+    //ArrayList<Product> bag = new ArrayList<>();
 
-    public ArrayAdapter getMyAdapter()
+    public FirebaseListAdapter<Product> getMyAdapter()
     {
         return adapter;
     }
+
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference firebase = mRootRef.child("items");
 
 
     //This method is the one we need to implement from the
@@ -57,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
         //adapter etc.
 
 
-        bag.clear();
+        //bag.clear();
+        mRootRef.setValue(null);
         listView.clearChoices();
         adapter.notifyDataSetChanged();
         Toast.makeText(this,"All items cleared", Toast.LENGTH_SHORT).show();
@@ -73,15 +85,20 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
         setSupportActionBar(toolbar);
 
 
+        Query query = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("items");
+
+
         //do we have some saved state?
-        if (savedInstanceState != null) {
-            System.out.println("test");
-            ArrayList<Product> savedBag = savedInstanceState.getParcelableArrayList("savedBag");
-            if (savedBag != null) { //did we save something
-                System.out.println("test deeper");
-                bag = savedBag;
-            }
-        }
+//        if (savedInstanceState != null) {
+//            System.out.println("test");
+//            //ArrayList<Product> savedBag = savedInstanceState.getParcelableArrayList("savedBag");
+////            if (savedBag != null) { //did we save something
+////                System.out.println("test deeper");
+////                bag = savedBag;
+////            }
+//        }
 
 
         //getting our listiew - you can check the ID in the xml to see that it
@@ -89,8 +106,25 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
         listView = findViewById(R.id.list);
         //here we create a new adapter linking the bag and the
         //listview
-        adapter =  new ArrayAdapter<Product>(this,
-                android.R.layout.simple_list_item_multiple_choice,bag );
+        //adapter =  new ArrayAdapter<Product>(this, android.R.layout.simple_list_item_multiple_choice,bag );
+
+        FirebaseListOptions<Product> options = new FirebaseListOptions.Builder<Product>()
+                .setQuery(query, Product.class)
+                .setLayout(android.R.layout.simple_list_item_multiple_choice)
+                .build();
+
+        adapter = new FirebaseListAdapter<Product>(options) {
+            @Override
+            protected void populateView(View v, Product product, int position) {
+
+                TextView textView = (TextView) v.findViewById(android.R.id.text1);
+                //textView.setTextSize(24); //modify this if you want different size
+                textView.setText(product.toString());
+
+
+            }
+        };
+
 
         //setting the adapter on the listview
         listView.setAdapter(adapter);
@@ -113,9 +147,12 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
                 System.out.println("item is: " + item);
                 //adapter.add(addText.getText().toString() + " x " + addQty.getText().toString());
                 if (addText.length() > 0) {
-                   adapter.add(new Product(addText.getText().toString(), Integer.parseInt(addQty.getText().toString()), item));
+                   //adapter.add(new Product(addText.getText().toString(), Integer.parseInt(addQty.getText().toString()), item));
+                    Product p = new Product(addText.getText().toString(), Integer.parseInt(addQty.getText().toString()), item);
+                    firebase.push().setValue(p);
+                    getMyAdapter().notifyDataSetChanged();
                 }
-                Log.d("Bag","Items in back: "+bag.size());
+                //Log.d("Bag","Items in back: "+bag.size());
             }
         });
 
@@ -126,14 +163,25 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
 
     }
 
+    @Override protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+
 
     //This method is called before our activity is destroyed
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-		/* Here we put code now to save the state */
-        outState.putParcelableArrayList("savedBag", bag);
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//		/* Here we put code now to save the state */
+//        outState.putParcelableArrayList("savedBag", bag);
+//    }
 
 
     @Override
@@ -154,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
             StringBuilder sb = new StringBuilder();
             Intent intent = new Intent(Intent.ACTION_SEND);
 
-            for (Product bagItem : bag) {
+            for (Product bagItem : adapter.getSnapshots()) {
                 sb.append(bagItem.toString() + ",");
                 sb.append("\n");
             }
@@ -185,11 +233,12 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
             savedCopies.clear();
             SparseBooleanArray positions = listView.getCheckedItemPositions();
             System.out.println(positions);
-            for (int i = bag.size() -1; i > -1; i--) {
+            for (int i = adapter.getCount() -1; i > -1; i--) {
                 //positions.get(i);
                 if (positions.get(i)) {
-                    saveProductCopy(i, bag.get(i));
-                    bag.remove(i);
+                    saveProductCopy(getMyAdapter().getRef(i).getKey(), adapter.getItem(i));
+                    //bag.remove(i);
+                    getMyAdapter().getRef(i).setValue(null);
                 }
             }
 
@@ -282,16 +331,17 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
 
     }
 
-    public void saveProductCopy(int position, Product product) {
+    public void saveProductCopy(String position, Product product) {
         savedCopies.put(position, product);
         //readdDeletedProducts();
     }
 
     public void readdDeletedProducts() {
-        for (Map.Entry<Integer, Product> entry : savedCopies.entrySet()) {
-            int key = entry.getKey();
+        for (Map.Entry<String, Product> entry : savedCopies.entrySet()) {
+            String key = entry.getKey();
             Product value = entry.getValue();
-            bag.add(key, value);
+            //bag.add(key, value);
+            firebase.child(key).setValue(value);
         }
         savedCopies.clear();
     }
