@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:key="male"
-        android:defaultValue="true"
-        android:summary="Male?"
-        android:title="Gender" />
+        android:key="dark"
+        android:defaultValue="false"
+        android:summary="Enable dark theme?"
+        android:title="Dark theme" />
 
     <EditTextPreference
         android:key="name"
         android:defaultValue="@string/enterName"
-        android:summary="Enter your name"
+        android:summary="Give your list a name"
         android:singleLine="true"
-        android:title="Name" />
+        android:title="Shopping list name" />
 
 </PreferenceScreen>

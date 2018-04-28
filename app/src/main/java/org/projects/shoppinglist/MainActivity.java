@@ -2,10 +2,12 @@ package org.projects.shoppinglist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -84,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        boolean dark = MyPreferenceFragment.isDark(this);
+        String name = MyPreferenceFragment.getName(this);
+        updateUI(name, dark);
 
         Query query = FirebaseDatabase.getInstance()
                 .getReference()
@@ -279,15 +285,30 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
 
 
     //This method updates our text views.
-    public void updateUI(String name, boolean male)
+    public void updateUI(String name, boolean dark)
     {
         TextView myName = findViewById(R.id.MyName);
         //TextView myGender = findViewById(R.id.myGender);
-        myName.setText("Welcome to " + name + "s shopping list");
-//        if (male)
-//            myGender.setText(R.string.male);
-//        else
-//            myGender.setText(R.string.female);
+        myName.setText("Shopping list: " + name );
+        if (dark) {
+            //myGender.setText(R.string.male);
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryCustom));
+
+            LinearLayout mainLayout = findViewById(R.id.entireApp);
+            mainLayout.setBackgroundColor(getResources().getColor(R.color.colorBgCustom));
+            //setTheme(R.style.AppTheme2);
+            //toolbar.getContext().setTheme(R.style.AppTheme2);
+        } else {
+            //myGender.setText(R.string.female);
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+            LinearLayout mainLayout = findViewById(R.id.entireApp);
+            mainLayout.setBackgroundColor(Color.WHITE);
+            //setTheme(R.style.AppTheme);
+            //toolbar.getContext().setTheme(R.style.AppTheme);
+        }
     }
 
     @Override
@@ -295,12 +316,12 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
         if (requestCode==RESULT_CODE_PREFERENCES) //the code means we came back from settings
         {
             //I can can these methods like this, because they are static
-            boolean male = MyPreferenceFragment.isMale(this);
+            boolean dark = MyPreferenceFragment.isDark(this);
             String name = MyPreferenceFragment.getName(this);
-            String message = "Welcome, "+name+", You are male? "+male;
+            String message = "Dark theme enabled: "+dark;
             Toast toast = Toast.makeText(this,message,Toast.LENGTH_LONG);
             toast.show();
-            updateUI(name,male);
+            updateUI(name,dark);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

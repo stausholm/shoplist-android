@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/entireApp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,8 +19,8 @@
         android:id="@+id/MyName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/welcome_to_my_shopping_list"/>
+        android:layout_gravity="start"
+        android:text="@string/welcome_to_my_shopping_list" />
 
 
     <LinearLayout

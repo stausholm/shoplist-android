@@ -12,15 +12,15 @@ public class MyPreferenceFragment extends PreferenceFragment {
     //and needs to correspond exactly to those in the prefs.xml file
     //You can check the key values in that file and check that it
     //corresponds to the keys defined here.
-    private static String SETTINGS_GENDERKEY = "male";
+    private static String SETTINGS_DARKTHEME = "dark";
     private static String SETTINGS_NAMEKEY = "name";
 
     //note these are static methods - meaning they always exists
     //so we do not have to create an instance of this class to
     //get the values.
-    public static boolean isMale(Context context)
+    public static boolean isDark(Context context)
     {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SETTINGS_GENDERKEY, true);
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SETTINGS_DARKTHEME, true);
     }
 
     public static String getName(Context context)
