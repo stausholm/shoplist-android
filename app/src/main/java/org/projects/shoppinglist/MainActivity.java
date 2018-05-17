@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 //import com.firebase.ui.database.FirebaseAdapter;
+import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.database.DatabaseReference;
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Crashlytics.getInstance().crash(); // Force a crash
         context = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
