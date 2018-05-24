@@ -250,9 +250,6 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
                 }
             }
 
-
-
-
             final View parent = listView;
             Snackbar snackbar = Snackbar
                     .make(parent, "Items Deleted", Snackbar.LENGTH_LONG)
@@ -267,8 +264,6 @@ public class MainActivity extends AppCompatActivity implements MyDialogFragment.
             if (positions.size() > 0) {
                 snackbar.show();
             }
-
-
 
             listView.clearChoices();
             //bag.remove(positions);

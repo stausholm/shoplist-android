@@ -20,7 +20,7 @@ public class MyPreferenceFragment extends PreferenceFragment {
     //get the values.
     public static boolean isDark(Context context)
     {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SETTINGS_DARKTHEME, true);
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SETTINGS_DARKTHEME, false);
     }
 
     public static String getName(Context context)
