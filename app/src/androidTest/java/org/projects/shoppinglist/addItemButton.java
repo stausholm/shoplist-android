@@ -22,14 +22,14 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.allOf;
 
-@LargeTest
-@RunWith(AndroidJUnit4.class)
+//@LargeTest
+//@RunWith(AndroidJUnit4.class)
 public class addItemButton {
 
-    @Rule
+   // @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    @Test
+    //@Test
     public void addItemButton() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:

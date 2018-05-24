@@ -24,20 +24,20 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-@LargeTest
-@RunWith(AndroidJUnit4.class)
+//@LargeTest
+//@RunWith(AndroidJUnit4.class)
 public class checkListItem {
 
-    @Rule
+    //@Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    @Before
+    //@Before
     public void clear() {
         clearList.clearList();
         //addItem.addItem();
     }
 
-    @Test
+    //@Test
     public void checkListItem() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
