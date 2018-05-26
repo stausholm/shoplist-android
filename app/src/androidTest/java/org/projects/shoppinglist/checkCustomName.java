@@ -47,26 +47,17 @@ public class checkCustomName {
 
     @Test
     public void checkCustomName() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         ViewInteraction appCompatTextView = onView(
                 allOf(withId(R.id.title), withText("Settings"),
                         childAtPosition(
@@ -76,16 +67,11 @@ public class checkCustomName {
                                 0),
                         isDisplayed()));
         appCompatTextView.perform(click());
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         DataInteraction linearLayout = onData(anything())
                 .inAdapterView(allOf(withId(android.R.id.list),
                         childAtPosition(
@@ -102,21 +88,12 @@ public class checkCustomName {
                                                 withClassName(is("android.widget.ScrollView")),
                                                 0)),
                                 1)));
-
         editText.perform(replaceText("food"));
-
-
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
         ViewInteraction editText3 = onView(
                 allOf(withId(android.R.id.edit), withText("food"),
                         childAtPosition(
@@ -136,18 +113,12 @@ public class checkCustomName {
                                         0),
                                 3)));
         button2.perform(scrollTo(), click());
-
         pressBack();
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         ViewInteraction textView = onView(
                 allOf(withId(R.id.MyName), withText("Shopping list: food"),
                         childAtPosition(
